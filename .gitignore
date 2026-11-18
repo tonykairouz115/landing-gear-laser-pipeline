@@ -1,0 +1,29 @@
+# Never commit student data or run outputs
+roster.txt
+classlist*.csv
+!classlist.example.csv
+shop.json
+.app_prefs.json
+submissions/
+selected/
+drawings/
+raw/
+raw_*/
+out/
+candidates/
+rehearsal/
+*.f3d
+*.f3z
+*.step
+*.dxf
+selection_log*.csv
+selection_report*.txt
+_export_log.csv
+check_results.csv
+best_per_group.csv
+report.csv
+report.md
+# Python
+__pycache__/
+*.pyc
+.venv/
