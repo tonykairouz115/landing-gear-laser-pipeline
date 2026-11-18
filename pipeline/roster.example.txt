@@ -1,0 +1,6 @@
+# One group ID per line. Lines starting with # are ignored.
+# Replace with your term's groups (export the group list from your LMS).
+MAAE-L1-G01
+MAAE-L1-G02
+AERO-L1-G01
+AERO-L1-G02

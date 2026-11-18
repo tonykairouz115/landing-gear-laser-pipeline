@@ -1,0 +1,15 @@
+{
+  "sheet": "1219.2x1219.2",
+  "material_thickness": 1.52,
+  "kerf": 0.0,
+  "part_gap": 4.0,
+  "sheet_margin": 8.0,
+  "mark": "group-code",
+  "nest_mode": "corner",
+  "seed": "2026",
+  "expect_lo": 3,
+  "expect_hi": 4,
+  "_comment": "STARTER ONLY. The app copies this to shop.json the first time it runs, then never touches it again -- so unzipping a new version over this folder cannot wipe the settings. Sheet is 48x48 inch. kerf 0 = the MACHINE applies cut compensation (outer profile outside the line, holes inside); only set a kerf here if the laser cannot do it, and then switch machine compensation OFF. font 'angular' draws letters with long straight strokes only, which a laser marks cleanly at small sizes; 'standard' rounds the curves. There is deliberately no 'layers' block and colours_confirmed is false: every run warns until someone cuts the test card, sets the six colours on the Settings page and ticks 'These colours are checked'. Each colour row there also sets its lines: hairline (followed) or filled (engraved) -- only the group ID and bend lines can be filled.",
+  "font": "angular",
+  "colours_confirmed": false
+}

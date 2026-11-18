@@ -1,0 +1,158 @@
+===================================================================
+ STEP 2 of 3 -- EXPORT THE FLAT PATTERNS  (done inside Fusion 360)
+===================================================================
+
+This step cannot be automated from a batch file. Fusion scripts only
+run inside Fusion, with Fusion open. So this is the one manual step
+between "which designs did we pick" and "here is the sheet to cut".
+
+It takes about five minutes of your time. The export itself then runs
+unattended for a while -- a full cohort is not fast, so start it and go
+do something else.
+
+
+-------------------------------------------------------------------
+BEFORE YOU START
+-------------------------------------------------------------------
+
+Step 1 must have finished. You should have a "selected" folder next
+to this file containing one file per group:
+
+    selected\MAAE-L1-G01.f3d
+    selected\MAAE-L1-G02.f3z
+    ...
+
+A .f3z is a Fusion archive: what a student gets when their parts were
+built as separate designs and linked into the assembly. Upload it with
+the others. Fusion unpacks it into the assembly plus one design per
+part -- that is expected. The script exports the parts through the
+assembly (it makes the links local in memory, and closes without
+saving) and does not treat the part designs as groups of their own.
+
+If selection_report.txt listed PROBLEMS, deal with those first. A
+group missing from "selected" is a group with no parts on the sheet,
+and you will not notice at the laser.
+
+
+-------------------------------------------------------------------
+A. INSTALL THE SCRIPT  (first time only)
+-------------------------------------------------------------------
+
+ 1. Open Fusion 360.
+ 2. Utilities tab -> ADD-INS -> Scripts and Add-Ins
+ 3. Scripts tab -> green "+" -> Create
+ 4. Name it exactly:   BatchExportProject
+ 5. Fusion creates a folder with a BatchExportProject.py inside it.
+    Replace that file with the one from this pipeline's "fusion"
+    folder. Overwrite it completely.
+
+Done once. It stays installed.
+
+
+-------------------------------------------------------------------
+B. UPLOAD THE SELECTED DESIGNS
+-------------------------------------------------------------------
+
+ 1. In the Fusion data panel, create a new project. Name it for the
+    term so you can find it later, e.g.  MAAE2001-F26-SELECTED
+ 2. Open that project.
+ 3. Upload -> select ALL the files from the "selected" folder.
+ 4. Wait for every upload to finish. Fusion shows a progress list --
+    do not start the export until it is empty.
+ 5. Make sure that project is the ACTIVE project in the data panel.
+    The script exports whatever project is active. Pointing it at
+    last term's project is the easiest mistake to make here.
+
+IMPORTANT: upload the "selected" folder only. Never upload all the
+student submissions -- the script would export every one of them and
+you would get four designs per group on the sheet.
+
+
+-------------------------------------------------------------------
+C. RUN THE EXPORT
+-------------------------------------------------------------------
+
+ 1. Utilities -> ADD-INS -> Scripts and Add-Ins -> Scripts
+ 2. Select BatchExportProject -> Run
+ 3. It asks for an output folder. Choose:
+
+        <this folder>\raw
+
+    Create it if it does not exist. This is what step 3 reads.
+
+ 4. Leave it alone. It opens each design, exports the flat patterns,
+    and closes without saving. Student files are not modified.
+
+
+-------------------------------------------------------------------
+WHAT YOU SHOULD HAVE AFTERWARDS
+-------------------------------------------------------------------
+
+    raw\MAAE-L1-G01\CHS.dxf      Chassie
+    raw\MAAE-L1-G01\LCV.dxf      Left Cover
+    raw\MAAE-L1-G01\RCV.dxf      Right Cover
+    raw\MAAE-L1-G01\NUT.dxf      Nut
+    raw\MAAE-L1-G01\LEG.dxf      Leg
+    raw\MAAE-L1-G01\STB.dxf      Stabalizer
+    ... x a full cohort
+    raw\_export_log.csv
+
+SIX files per group. The sheet will carry SEVEN blanks, because the
+Stabalizer is quantity 2 and the pipeline doubles it later. Six in,
+seven out is correct, not a missing file.
+
+
+-------------------------------------------------------------------
+READ _export_log.csv BEFORE MOVING ON
+-------------------------------------------------------------------
+
+One row per component. Eight things it can say:
+
+  OK        exported fine.
+
+  MISSING   an expected part was not found in that assembly. Almost
+            always a component naming problem -- the script looks for
+            Chassie / Left Cover / Right Cover / Nut / Leg /
+            Stabalizer (and the usual spellings: Chassis, Nut Clip,
+            Stabilizer, Stabiliser...). That group is short a part.
+            Chase it.
+
+  NAME      a component was exported, but under a name the script did
+            not recognise, so the file kept its full name instead of
+            a three-letter code. Check what they called it.
+
+  SKIP      a component has no flat pattern. Expected for the bought
+            parts (gears, knob, wheel, rivet nut) -- ignore those
+            rows. NOT expected for one of the six formed parts: it
+            means that student modelled a folded solid rather than
+            real sheet metal, which the project brief specifically
+            requires. Section 4.2. A SKIP that says "a second
+            component that is also the ..." means two components both
+            looked like the same part (say "Nut" and "Nut Clip"): only
+            the first was exported -- check it was the right one.
+
+  FAIL      the export itself went wrong, or the design would not
+            open. A design that will not open has NO folder at all --
+            that group has nothing to cut until it is fixed.
+
+  DUPLICATE two designs resolve to the same group ID. Both were
+            exported to separate folders; delete the wrong one.
+
+  LINKS     a .f3z group: its linked parts were made local in memory
+            so they could be flattened. Nothing to do -- just check the
+            same group has six OK rows.
+
+  PART      a part design unpacked from a .f3z. It was not exported on
+            its own, only through its assembly. Ignore these rows.
+
+Filter the CSV for everything that is not OK. Every one of those rows
+needs a look before building the sheet.
+
+
+-------------------------------------------------------------------
+THEN
+-------------------------------------------------------------------
+
+    3_run_pipeline.bat
+
+===================================================================
